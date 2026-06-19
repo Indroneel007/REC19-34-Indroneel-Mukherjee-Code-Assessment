@@ -1,7 +1,9 @@
 import os
+import json
 from app.db import load_vectors
 
 WEAVIATE_URL = os.getenv('WEAVIATE_URL')
+WEAVIATE_API_KEY = os.getenv('WEAVIATE_API_KEY')
 _client = None
 
 
@@ -13,7 +15,11 @@ def _get_client():
         return None
     try:
         import weaviate
-        _client = weaviate.Client(url=WEAVIATE_URL)
+        if WEAVIATE_API_KEY:
+            auth = weaviate.AuthApiKey(api_key=WEAVIATE_API_KEY)
+            _client = weaviate.Client(url=WEAVIATE_URL, auth_client_secret=auth)
+        else:
+            _client = weaviate.Client(url=WEAVIATE_URL)
         return _client
     except Exception:
         return None

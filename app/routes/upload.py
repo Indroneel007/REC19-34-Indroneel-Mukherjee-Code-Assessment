@@ -18,7 +18,6 @@ async def upload_pdf(file: UploadFile = File(...)):
     with dest.open('wb') as f:
         contents = await file.read()
         f.write(contents)
-    # Process in background - for starter we'll process synchronously
     try:
         await process_pdf(str(dest), doc_id)
     except Exception as e:
